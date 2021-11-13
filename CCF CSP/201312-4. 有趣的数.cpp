@@ -1,8 +1,3 @@
-#include <iostream>
-#include <cstring>
-#define LL long long
-using namespace std;    
-
 // 2肯定是在首位的，因为2必须在3的前面，而0必须在1的前面，而且0不能在首位，那么显而易见的首位只能是2.
 
 // 这题是典型的数位dp，第 n 位可以利用第 n-1 位的结果， 将其分为6种状态如下：
@@ -24,23 +19,28 @@ using namespace std;
 // 对于状态4: dp[i][4] = dp[i-1][2] + dp[i-1][4] * 2
 // 对于状态5：dp[i][5] = dp[i-1][2] + dp[i-1][3] + dp[i-1][5] * 2
 // 对于状态6：dp[i][6] = dp[i-1][4] + dp[i-1][5] + dp[i-1][6] * 2
-
-
-const int MOD = 1000000007;
-LL dp[1001][7];
-
+#include <iostream>
+#include <cstring>
+using namespace std;
+#define mod 1000000007
+long long dp[1001][7];
 int main() {
-    int n;
-    cin >> n;
     memset(dp, 0, sizeof dp);
-    for (int i = 1; i <= n; i++) { //dp[i][j] 表示位数为 i，符合状态 j （6种）的合法的数的个数。
-        dp[i][1] = 1; // 只含 2
-        dp[i][2] = (dp[i-1][1] + dp[i-1][2] * 2) % MOD; // 只含 2 0
-        dp[i][3] = (dp[i-1][1] + dp[i-1][3]) % MOD; // 只含 2 3
-        dp[i][4] = (dp[i-1][2] + dp[i-1][4] * 2) % MOD; // 只含 2 0 1
-        dp[i][5] = (dp[i-1][2] + dp[i-1][3] + dp[i-1][5] * 2) % MOD; // 只含 2 3 0
-        dp[i][6] = (dp[i-1][4] + dp[i-1][5] + dp[i-1][6] * 2) % MOD; // 4个数字都包含
+    int n;
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        //2+2/0,3;
+        //20+0,2/1,3;23+3/0;
+        //201+1,2/3;203+0,3/1;
+        //0123+1,3;
+        dp[i][0] = 1;
+        dp[i][1] = (dp[i-1][1] * 2 + dp[i-1][0]) % mod;
+        dp[i][2] = (dp[i-1][2] + dp[i-1][0]) % mod;
+        dp[i][3] = (dp[i-1][3] * 2 + dp[i-1][1]) % mod;
+        dp[i][4] = (dp[i-1][4] * 2 + dp[i-1][1] + dp[i-1][2]) % mod;
+        dp[i][5] = (dp[i-1][5] * 2 + dp[i-1][3] + dp[i-1][4]) % mod;
+        //cout<<dp[i][0]<<" "<<dp[i][1]<<" "<<dp[i][2]<<" "<<dp[i][3]<<" "<<dp[i][4]<<" "<<dp[i][5]<<endl;
     }
-    cout << dp[n][6] << endl;
+    cout<<dp[n][5]<<endl;
     return 0;
 }
